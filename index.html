@@ -34,7 +34,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
 
 .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1;margin:0;letter-spacing:.01em;text-transform:uppercase}
-.sub{color:var(--muted);font-size:13px;margin-top:4px}
 .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
 button{font:inherit;color:inherit;cursor:pointer}
@@ -96,7 +95,7 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 @media (max-width:880px){
   .app{padding-block:8px 20px;gap:8px}
   h1{font-size:22px}
-  .sub,.top .t{display:none}
+  .top .t{display:none}
   .top{align-items:center}
   .top .btn{min-width:40px}
   .toolbar{flex-wrap:nowrap;overflow-x:auto;padding:5px 6px;gap:10px;scrollbar-width:none}
@@ -128,7 +127,6 @@ html.maxed{overflow:hidden}
   <div class="top">
     <div class="title">
       <h1>Planche tactique</h1>
-      <div class="sub">Handball · terrain 40 × 20 m · zone à 6 m, jet franc à 9 m</div>
     </div>
     <div class="row">
       <button class="btn" id="undo" title="Annuler (Ctrl+Z)" aria-label="Annuler">↶<span class="t"> Annuler</span></button>
@@ -271,9 +269,7 @@ function initial(){
   ATT['3-3'].forEach((p,i)=>tokens.push({id:'t'+n++,type:'att',label:ATT_LABELS[i],x:p[0],y:p[1]}));
   tokens.push({id:'t'+n++,type:'att',gk:true,label:'GB',x:394,y:100});
   tokens.push({id:'t'+n++,type:'ball',x:130,y:109});
-  const drawings=[
-    {id:'d'+n++,kind:'pass',color:INK,pts:[[117,89],[111,60]]},
-    {id:'d'+n++,kind:'run',color:INK,pts:[[99,43],[80,34],[61,35]]}];
+  const drawings=[{id:'d'+n++,kind:'run',color:INK,pts:[[99,43],[80,34],[61,35]]}];
   return {v:1,view:'half',cur:0,seq:n,frames:[{tokens,drawings}]};
 }
 const frame=()=>state.frames[state.cur];
@@ -533,10 +529,21 @@ $('#viewHalf').onclick=()=>setView('half');$('#viewFull').onclick=()=>setView('f
 function applyPreset(team,pos){
   if(playing)return;const f=frame();
   const list=f.tokens.filter(t=>t.type===team&&!t.gk);
+  const placed=[];
   pos.forEach((p,i)=>{let t=list[i];
     if(!t){t={id:'t'+state.seq++,type:team,label:team==='att'?ATT_LABELS[i]:String(i+1),x:0,y:0};f.tokens.push(t);}
-    t.x=p[0];t.y=p[1];});
+    t.x=p[0];t.y=p[1];placed.push(t);});
   if(team==='def'){const g=f.tokens.find(t=>t.type==='def'&&t.gk);if(g){g.x=6;g.y=100;}}
+  // Un joueur placé ne doit pas en recouvrir un autre : on le décale sur la largeur jusqu'à la première place libre.
+  const others=f.tokens.filter(t=>(t.type==='att'||t.type==='def')&&!placed.includes(t));
+  placed.forEach(t=>{
+    const free=y=>y>=4&&y<=196&&!others.some(o=>Math.hypot(o.x-t.x,o.y-y)<18.5);
+    for(let d=0;d<=70;d++){
+      if(free(t.y-d)){t.y-=d;break;}
+      if(free(t.y+d)){t.y+=d;break;}
+    }
+    others.push(t);
+  });
   commit();render();
 }
 Object.keys(ATT).forEach(k=>{h('button',{className:'btn',textContent:k,title:'Attaque placée en '+k},$('#attPresets')).onclick=()=>applyPreset('att',ATT[k]);});
