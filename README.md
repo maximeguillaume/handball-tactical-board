@@ -66,11 +66,13 @@ Tout est stocké dans le navigateur (`localStorage`). Les schémas restent donc 
 
 ## Sur mobile
 
-La mise en page s'adapte aux petits écrans : le panneau de réglages passe sous le terrain. La tablette est le format le plus confortable.
+La mise en page s'adapte aux petits écrans. La tablette reste le format le plus confortable.
 
-- Sur téléphone, préférez le demi-terrain ou l'orientation paysage : en terrain entier, les joueurs sont petits.
-- Un doigt posé sur le terrain trace ou déplace ; pour faire défiler la page, partez de la barre d'outils ou des panneaux.
-- Le plein écran n'existe pas sur iPhone ; le bouton est masqué quand le navigateur ne le propose pas.
+- Le terrain occupe toute la largeur de l'écran, l'en-tête est réduit et les outils tiennent sur une seule ligne qui défile horizontalement.
+- En portrait, le terrain entier s'affiche en hauteur, but du haut à attaquer.
+- Le panneau de réglages passe sous le terrain.
+- Un doigt posé sur le terrain trace ou déplace ; pour faire défiler la page, partez des barres ou des panneaux.
+- Le bouton ⛶ agrandit la planche. Quand le navigateur n'autorise pas le vrai plein écran (iPhone), la planche remplit la page à la place : les barres du navigateur restent visibles.
 
 ## Technique
 

@@ -31,8 +31,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
 .app{max-width:1280px;margin:0 auto;padding-block:14px 28px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   display:flex;flex-direction:column;gap:12px;background:var(--bg);box-sizing:border-box}
-.app:fullscreen{max-width:none;overflow:auto}
-.app:fullscreen .court{max-height:86vh}
 
 .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1;margin:0;letter-spacing:.01em;text-transform:uppercase}
@@ -93,20 +91,49 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .saves .name{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .note{color:var(--muted);font-size:13px}
 #toast{color:var(--muted);font-size:13px;min-height:18px}
+
+/* Petits écrans : en-tête et outils compacts, terrain bord à bord */
+@media (max-width:880px){
+  .app{padding-block:8px 20px;gap:8px}
+  h1{font-size:22px}
+  .sub,.top .t{display:none}
+  .top{align-items:center}
+  .top .btn{min-width:40px}
+  .toolbar{flex-wrap:nowrap;overflow-x:auto;padding:5px 6px;gap:10px;scrollbar-width:none}
+  .toolbar::-webkit-scrollbar{display:none}
+  .toolbar>*{flex:none}
+  .toolbar .spacer{display:none}
+  .tools{flex-wrap:nowrap}
+  .tool{min-width:52px}
+  .court-wrap{border-radius:0;
+    margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+    margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+}
+
+/* Mode agrandi : vrai plein écran, ou repli en CSS quand le navigateur ne le propose pas (iPhone) */
+html.maxed{overflow:hidden}
+.app.max{position:fixed;inset:0;z-index:50;max-width:none;overflow:hidden;gap:8px;
+  padding-top:max(8px,env(safe-area-inset-top,0px));padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+.app.max .title,.app.max aside{display:none}
+.app.max .top{justify-content:flex-end}
+.app.max .main{flex:1;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.app.max .stage{height:100%;min-height:0}
+.app.max .court-wrap{flex:1;min-height:0}
+.app.max .court{height:100%;max-height:none}
 </style>
 
 </head>
 <body>
 <div class="app" id="app">
   <div class="top">
-    <div>
+    <div class="title">
       <h1>Planche tactique</h1>
       <div class="sub">Handball · terrain 40 × 20 m · zone à 6 m, jet franc à 9 m</div>
     </div>
     <div class="row">
-      <button class="btn" id="undo" title="Annuler (Ctrl+Z)">↶ Annuler</button>
-      <button class="btn" id="redo" title="Rétablir (Ctrl+Maj+Z)">↷ Rétablir</button>
-      <button class="btn" id="full">Plein écran</button>
+      <button class="btn" id="undo" title="Annuler (Ctrl+Z)" aria-label="Annuler">↶<span class="t"> Annuler</span></button>
+      <button class="btn" id="redo" title="Rétablir (Ctrl+Maj+Z)" aria-label="Rétablir">↷<span class="t"> Rétablir</span></button>
+      <button class="btn" id="full" aria-label="Plein écran" aria-pressed="false">⛶<span class="t"> Plein écran</span></button>
     </div>
   </div>
 
@@ -234,7 +261,8 @@ const COLORS=[['Noir',INK],['Blanc','#ffffff'],['Rouge','#c81e3a'],['Jaune','#ff
 
 const svg=$('#court'), world=$('#world'), gD=$('#drawings'), gT=$('#tokens'), gL=$('#live');
 let state, snap, undo=[], redo=[];
-let tool='move', color=INK, sel=null, drag=null, playing=false, playRun=0, inspKey='';
+let tool='move', color=INK, sel=null, drag=null, playing=false, playRun=0, inspKey='', flipped=true;
+const mqSmall=matchMedia('(max-width:880px)'), mqPortrait=matchMedia('(orientation:portrait)');
 
 function initial(){
   let n=0; const tokens=[];
@@ -331,7 +359,7 @@ function drawEl(d,selected){
 
 function tokEl(t,selected){
   const g=el('g',{class:'tok','data-id':t.id,transform:`translate(${t.x.toFixed(1)},${t.y.toFixed(1)})`});
-  const inner=el('g',state.view==='half'?{transform:FLIP}:{},g);
+  const inner=el('g',flipped?{transform:FLIP}:{},g);
   const R=t.type==='ball'?4.6:t.type==='cone'?6.5:9;
   el('circle',{r:Math.max(R+4,10),fill:'transparent'},inner);
   if(selected){el('circle',{r:R+3,fill:'none',stroke:INK,'stroke-width':2.6},inner);
@@ -356,8 +384,11 @@ function tokEl(t,selected){
 /* ---------- rendu ---------- */
 function render(over){
   const half=state.view==='half',f=frame();
-  svg.setAttribute('viewBox',half?'-15 -18 230 230':'-20 -15 440 230');
-  if(half)world.setAttribute('transform',FLIP);else world.removeAttribute('transform');
+  // Sur petit écran : cadrage serré, et terrain entier affiché en hauteur quand l'écran est en portrait.
+  const small=mqSmall.matches;
+  flipped=half||(small&&mqPortrait.matches);
+  svg.setAttribute('viewBox',half?(small?'-9 -14 218 222':'-15 -18 230 230'):flipped?'-9 -16 218 432':'-20 -15 440 230');
+  if(flipped)world.setAttribute('transform',FLIP);else world.removeAttribute('transform');
   gD.replaceChildren(...f.drawings.map(d=>drawEl(d,sel&&sel.k==='d'&&sel.id===d.id)));
   const rank=t=>t.type==='ball'?2:t.type==='cone'?0:1;
   const toks=(over||f.tokens).slice().sort((a,b)=>rank(a)-rank(b));
@@ -584,12 +615,20 @@ $('#saveBtn').onclick=()=>{
 
 /* ---------- plein écran ---------- */
 const app=$('#app');
-if(!app.requestFullscreen||document.fullscreenEnabled===false)$('#full').hidden=true;
+const canFS=!!app.requestFullscreen&&document.fullscreenEnabled!==false;
+function setMax(on){
+  app.classList.toggle('max',on);document.documentElement.classList.toggle('maxed',on);
+  $('#full .t').textContent=on?' Réduire':' Plein écran';
+  $('#full').setAttribute('aria-pressed',on);$('#full').setAttribute('aria-label',on?'Réduire':'Plein écran');
+}
 $('#full').onclick=()=>{
-  if(document.fullscreenElement)document.exitFullscreen();
-  else{const p=app.requestFullscreen();if(p&&p.catch)p.catch(()=>{$('#full').hidden=true;});}
+  if(document.fullscreenElement){document.exitFullscreen();return;}
+  if(app.classList.contains('max')){setMax(false);return;}
+  if(!canFS){setMax(true);return;}
+  try{const p=app.requestFullscreen();if(p&&p.catch)p.catch(()=>setMax(true));}catch(e){setMax(true);}
 };
-document.addEventListener('fullscreenchange',()=>{$('#full').textContent=document.fullscreenElement?'Quitter le plein écran':'Plein écran';});
+document.addEventListener('fullscreenchange',()=>setMax(!!document.fullscreenElement));
+[mqSmall,mqPortrait].forEach(m=>m.addEventListener&&m.addEventListener('change',()=>{if(!playing)render();}));
 
 /* ---------- démarrage ---------- */
 try{const s=JSON.parse(localStorage.getItem(K_CUR));if(valid(s))state=s;}catch(e){}
