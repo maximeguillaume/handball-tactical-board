@@ -74,9 +74,18 @@ La mise en page s'adapte aux petits écrans. La tablette reste le format le plus
 - Un doigt posé sur le terrain trace ou déplace ; pour faire défiler la page, partez des barres ou des panneaux.
 - Le bouton ⛶ agrandit la planche. Quand le navigateur n'autorise pas le vrai plein écran (iPhone), la planche remplit la page à la place : les barres du navigateur restent visibles.
 
+### Ajouter à l'écran d'accueil
+
+Depuis la version en ligne, la page s'installe comme une application, avec son icône :
+
+- **iPhone et iPad** : dans Safari, bouton Partager puis « Sur l'écran d'accueil ».
+- **Android** : dans Chrome, menu puis « Ajouter à l'écran d'accueil » ou « Installer l'application ».
+
+Lancée depuis l'écran d'accueil, la planche s'ouvre sans les barres du navigateur. Sur iOS, elle garde alors ses propres schémas, séparés de ceux enregistrés dans Safari.
+
 ## Technique
 
-Un seul fichier, `index.html`, sans dépendance ni étape de build.
+Toute la page tient dans `index.html`, sans dépendance ni étape de build. Les autres fichiers servent à l'icône : `icon.svg` (le dessin d'origine), ses exports `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`, et `manifest.webmanifest`.
 
 - **SVG** pour le terrain, les joueurs et les tracés. Le repère est en décimètres : `x` de 0 à 400 dans la longueur, `y` de 0 à 200 dans la largeur. Le demi-terrain est le même dessin, retourné par une transformation.
 - **JavaScript** sans framework : Pointer Events pour la souris et le tactile, `requestAnimationFrame` pour l'animation.

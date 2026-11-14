@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Sol du terrain -->
+  <rect width="512" height="512" fill="#4a8fcf"/>
+  <!-- Derrière la ligne de but -->
+  <rect width="512" height="70" fill="#2f5f8f"/>
+  <!-- Zone à 6 m -->
+  <path d="M61,70 A156,156 0 0 0 217,226 L295,226 A156,156 0 0 0 451,70 Z" fill="#f2c14e" stroke="#ffffff" stroke-width="10" stroke-linejoin="round"/>
+  <!-- Ligne de jet franc à 9 m -->
+  <path d="M-17,70 A234,234 0 0 0 217,304 L295,304 A234,234 0 0 0 529,70" fill="none" stroke="#ffffff" stroke-width="9" stroke-dasharray="26 20"/>
+  <!-- Ligne de but et but -->
+  <rect x="0" y="65" width="512" height="10" fill="#ffffff"/>
+  <rect x="217" y="32" width="78" height="38" fill="#ffffff" fill-opacity=".3" stroke="#ffffff" stroke-width="8"/>
+  <rect x="213" y="64" width="86" height="12" fill="#d7263d"/>
+  <!-- Course de l'attaquant -->
+  <path d="M196,404 C300,392 352,356 366,300" fill="none" stroke="#101820" stroke-width="17" stroke-linecap="round"/>
+  <path d="M376,236 L404,304 L336,296 Z" fill="#101820" stroke="#101820" stroke-width="8" stroke-linejoin="round"/>
+  <!-- Défenseur -->
+  <circle cx="232" cy="290" r="42" fill="#ffffff" stroke="#101820" stroke-width="10"/>
+  <!-- Attaquant -->
+  <circle cx="140" cy="410" r="50" fill="#d7263d" stroke="#ffffff" stroke-width="11"/>
+</svg>

@@ -4,10 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Planche tactique handball</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Planche tactique handball">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#edf1f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1720" media="(prefers-color-scheme: dark)">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
 <style>
 :root{color-scheme:light}
 html,body{margin:0}
+body{padding-bottom:env(safe-area-inset-bottom,0px)}
 [hidden]{display:none!important}
 img{max-width:100%}
 /* Layout : barre d'outils en haut, terrain au centre, panneau de réglages à droite (dessous sur téléphone). */
@@ -269,8 +279,7 @@ function initial(){
   ATT['3-3'].forEach((p,i)=>tokens.push({id:'t'+n++,type:'att',label:ATT_LABELS[i],x:p[0],y:p[1]}));
   tokens.push({id:'t'+n++,type:'att',gk:true,label:'GB',x:394,y:100});
   tokens.push({id:'t'+n++,type:'ball',x:130,y:109});
-  const drawings=[{id:'d'+n++,kind:'run',color:INK,pts:[[99,43],[80,34],[61,35]]}];
-  return {v:1,view:'half',cur:0,seq:n,frames:[{tokens,drawings}]};
+  return {v:1,view:'half',cur:0,seq:n,frames:[{tokens,drawings:[]}]};
 }
 const frame=()=>state.frames[state.cur];
 const store=()=>{try{localStorage.setItem(K_CUR,snap);}catch(e){}};
