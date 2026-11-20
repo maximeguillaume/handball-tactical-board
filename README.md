@@ -4,9 +4,11 @@ Une planche tactique pour entraîneur de handball, dans une seule page web. On y
 
 La page s'utilise à la souris, au doigt ou au stylet. Elle ne demande ni installation ni compte.
 
+**Ouvrir la planche : <https://maximeguillaume.github.io/handball-tactical-board/>**
+
 ## Utilisation
 
-Ouvrez `index.html` dans un navigateur. La page s'ouvre sur un exemple : attaque en 3-3 contre défense 6-0 sur demi-terrain.
+Ouvrez la planche à l'adresse ci-dessus. Elle s'affiche sur demi-terrain, avec une attaque en 3-3 face à une défense 6-0 et aucun tracé.
 
 ### Terrain
 
@@ -76,7 +78,7 @@ La mise en page s'adapte aux petits écrans. La tablette reste le format le plus
 
 ### Ajouter à l'écran d'accueil
 
-Depuis la version en ligne, la page s'installe comme une application, avec son icône :
+Depuis la [version en ligne](https://maximeguillaume.github.io/handball-tactical-board/), la page s'installe comme une application, avec son icône :
 
 - **iPhone et iPad** : dans Safari, bouton Partager puis « Sur l'écran d'accueil ».
 - **Android** : dans Chrome, menu puis « Ajouter à l'écran d'accueil » ou « Installer l'application ».
@@ -102,7 +104,13 @@ Les données se trouvent au début du script de `index.html` :
 
 Les couleurs du terrain et de l'interface sont des variables CSS, déclarées dans `:root` en haut de la feuille de style.
 
-Pour travailler en local, ouvrez le fichier directement ou servez le dossier :
+### Publication
+
+Le site est publié par GitHub Pages depuis la racine de la branche `main`. Chaque fusion dans `main` le met à jour en quelques minutes.
+
+### Travailler en local
+
+Ouvrez `index.html` directement, ou servez le dossier pour que le manifest et les icônes se chargent comme en ligne :
 
 ```sh
 python3 -m http.server 8000
