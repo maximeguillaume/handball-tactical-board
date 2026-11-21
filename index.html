@@ -656,5 +656,11 @@ renderSaves();
 setTool('move');
 })();
 </script>
+<script>
+// Mode hors ligne : le service worker garde la page en cache (HTTPS uniquement, donc pas en ouvrant le fichier en local).
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+</script>
 </body>
 </html>

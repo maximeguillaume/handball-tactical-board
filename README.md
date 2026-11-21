@@ -85,9 +85,13 @@ Depuis la [version en ligne](https://maximeguillaume.github.io/handball-tactical
 
 Lancée depuis l'écran d'accueil, la planche s'ouvre sans les barres du navigateur. Sur iOS, elle garde alors ses propres schémas, séparés de ceux enregistrés dans Safari.
 
+### Hors ligne
+
+Après une première ouverture avec une connexion, la planche fonctionne sans réseau, dans le navigateur comme une fois installée. Sur iPhone, lancez l'application installée une fois en ligne pour qu'elle se mette en cache. Quand une connexion est disponible, la planche charge automatiquement sa dernière version.
+
 ## Technique
 
-Toute la page tient dans `index.html`, sans dépendance ni étape de build. Les autres fichiers servent à l'icône : `icon.svg` (le dessin d'origine), ses exports `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`, et `manifest.webmanifest`.
+Toute la page tient dans `index.html`, sans dépendance ni étape de build. Les autres fichiers servent à l'icône : `icon.svg` (le dessin d'origine), ses exports `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`, et `manifest.webmanifest`. `sw.js` est le service worker qui assure le mode hors ligne : si vous modifiez sa liste de fichiers, changez aussi le nom du cache (`CACHE`) en tête du fichier.
 
 - **SVG** pour le terrain, les joueurs et les tracés. Le repère est en décimètres : `x` de 0 à 400 dans la longueur, `y` de 0 à 200 dans la largeur. Le demi-terrain est le même dessin, retourné par une transformation.
 - **JavaScript** sans framework : Pointer Events pour la souris et le tactile, `requestAnimationFrame` pour l'animation.
